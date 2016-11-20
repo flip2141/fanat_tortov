@@ -1,0 +1,76 @@
+﻿g = []
+k = []
+j = []
+m = []
+q = []
+STATEARRAY = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"]
+for (i in document.getElementsByClassName("sort table-bordered")[0].children)
+{
+    if (document.getElementsByClassName("sort table-bordered")[0].children[i].children[1].children[1].textContent=="NEW")
+    {
+        g.push(document.getElementsByClassName("sort table-bordered")[0].children[i])
+        j.push(g[i].children[1].children[0].textContent)
+    }
+    else
+    break;
+}
+for (i in j)
+{
+    if (j[i].match(/(,| ){1,}[A-Za-z]{2}$/)!=undefined)
+    {
+        stat = j[i].match(/(,| ){1,}[A-Za-z]{2}$/)[0].match(/[A-Z]{2}/i)[0]
+        if ((STATEARRAY.indexOf(stat.toUpperCase())!=-1) && (j[i].match(/(^[\wâ´ÁÂÍó.çè'\-BaéÇÃlneáõriíoãú ]+)((,| ){1,}[A-Z]{2}$)/i)!=undefined))
+        {
+            k.push(g[i])
+            q.push([j[i].match(/(^[\wâ´ÁÂÍó.çè'\-BaéÇÃlneáõriíoãú ]+)((,| ){1,}[A-Z]{2}$)/i)[1],STATEARRAY.indexOf(stat.toUpperCase())+1,g[i].children[1].children[0].href.match(/\d+$/)[0]])
+        }
+    }
+}
+
+CurCity = 0
+
+function ChangeState()
+{
+    if (CurCity<q.length)
+    $.post("http://br.open-closed.org/admin2/inc/action_city.php",{p:"br",t1:"state",cit:q[CurCity][2],val:q[CurCity][1]}).done(function(data)
+    {
+        gho = data
+        if (JSON.parse(data)["mes"]==1)
+        {
+            console.log("Zbs");
+            setTimeout(Changeame,1);
+        }
+        else
+        {
+            console.log("Xyevo");
+        }
+    })
+}
+
+function Changeame()
+{
+    $.post("http://br.open-closed.org/admin2/inc/action_city.php",{p:"br",t1:"name",cit:q[CurCity][2],val:q[CurCity][0]}).done(function(data)
+    {
+        CurCity+=1
+        setTimeout(ChangeState,1);
+
+    })
+}
+
+//  http://br.open-closed.org/admin2/inc/action_city.php
+
+/*
+p:br
+t1:state
+cit:5802
+val:1
+
+{p:"br",t1:"state",q[CurCity][2],q[CurCity][1]}
+
+{p:"br",t1:"name",q[CurCity][2],q[CurCity][0]}
+
+p:br
+t1:name
+cit:5802
+val:Acrelândia
+*/
