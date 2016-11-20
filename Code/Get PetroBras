@@ -1,0 +1,80 @@
+
+var curstate;
+var Statelist = [];
+var g;
+var curcidade;
+var BranchList = [];
+
+var CidadeList = [];
+
+getStateList();
+
+
+function getStateList()
+{
+    g = document.getElementById("uf").getElementsByTagName("option")
+    for (i in g)
+    {
+        Statelist.push(g[i].textContent)
+    }
+    Statelist = Statelist.slice(1)
+    curstate = 0;
+    getCidade(Statelist[curstate])
+}
+
+
+function getCidade(State)
+{
+    $.get("https://www.petrobraspremmia.com.br/api/v2/estados/"+State+"/municipio/pim")
+    .done(function(data)
+    {
+        k = data
+        g = []
+        for (i in k)
+        {
+            CidadeList.push([State,k[i].municipio])
+        }
+        
+        if (curstate<Statelist.length)
+        {
+            curstate++
+            setTimeout(getCidade,1,Statelist[curstate])
+        }
+        else
+        {
+            console.log("CidadePrepare.")
+            curcidade = 0;
+            GetBranches(CidadeList[curcidade]);
+        }
+    })
+}
+
+function GetBranches(Cidade)
+{
+    $.get("https://www.petrobraspremmia.com.br/api/v2/postospremmia/pim/enderecos?"+
+    "?Uf="+Cidade[0]+"&bairro=&brmania=false&brmaniaresgate=false&cidade="+encodeURI(Cidade[1])+"&lubraxmais=false&pagina=1&quantidadeporpagina=1000")
+    .done(function(data)
+    {
+        k = data
+        if (k.items!=undefined)
+        {
+            g = k.items;
+            for (i in g)
+            {
+                BranchList.push(g[i]);
+            }
+        }
+        
+        if (curstate<CidadeList.length)
+        {
+            curcidade++
+            setTimeout(GetBranches,1,CidadeList[curcidade])
+        }
+        else
+        {
+            console.log("Done.")
+            console.log(BranchList)
+        }
+    })
+    
+}
