@@ -1,0 +1,16 @@
+s = ""
+
+for (i in BranchList)
+{
+    CEP = BranchList[i].cep
+    NAME = BranchList[i].postoPremmiaDescricao
+    CITY = BranchList[i].municipio
+    ADR = BranchList[i].logradouro
+    if (BranchList[i].numero!="")
+    ADR +=", "+BranchList[i].numero
+    STATE = BranchList[i].uf;
+    s+=CEP+"\n"+NAME+"\n"+CITY+"\n"+ADR+"\n"+STATE+"\n";
+}
+console.log(s.split("\n"))
+
+localStorage.setItem("Petrobras",s)
