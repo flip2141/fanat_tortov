@@ -1,0 +1,19 @@
+var xhr = new XMLHttpRequest();
+
+var params = "act=deactivate_box&al=1";
+
+xhr.open("GET", 'https://vk.com/al_settings.php?' + params, true);
+
+xhr.onreadystatechange = function(data)
+{
+    if (data.target.readyState==4)
+    {
+        g = data.target.responseText
+        k = g.match(/<div class="settings_reason_desc">[^<]+<\/div>[^<]+<\/div>[^<]+<div class="radiobtn settings_reason" id="settings_reason_last" onclick="cur\.changeReason\(6, this\);">/gi)[0].replace(/<[^>]+>/gi,"")
+        j = k.match(/\. [^ ]+ [^ ]+ [^ ]+ [^ ]+ [^ ]+/gi)[0]
+        console.log(j.replace(/\. /,"").match(/[^ ]{2,} [^ ]{2,}/gi))
+    }
+    
+}
+
+xhr.send();
