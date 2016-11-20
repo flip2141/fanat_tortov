@@ -1,0 +1,22 @@
+
+s = "";
+Cur= ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+g=0;
+function NextStep()
+{
+    $.get("http://www.oeffnungszeiten.ch/searches/search"
+    ,{query:Cur[g]}
+    ,function(data)
+    {
+        k = JSON.parse(data)["suggestions"];
+        for (i in k)
+        {
+            s+=k[i]+"\n"
+        }
+        g++
+        if (g<Cur.length)
+        NextStep()
+        else
+        localStorage.setItem("All",s)
+    })
+}
